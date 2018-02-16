@@ -21,7 +21,7 @@
 //--------------------------------------------------------------------------------------
 // Constructor. Set the pinReader to the default pin reader method
 //--------------------------------------------------------------------------------------
-EnergyMonitor::myEnergyMonitor()
+EnergyMonitor::EnergyMonitor()
 {
   this->inputPinReader = defaultInputPinReader;
 }
@@ -277,4 +277,3 @@ long EnergyMonitor::readVcc() {
   return (3300);                                  //Guess that other un-supported architectures will be running a 3.3V!
   #endif
 }
-
