@@ -29,11 +29,13 @@
 #define READVCC_CALIBRATION_CONST 1126400L
 #endif
 
-// to enable 12-bit ADC resolution on Arduino Due,
-// include the following line in main sketch inside setup() function:
-//  analogReadResolution(ADC_BITS);
+
+// to enable 15-bit ADC resolution on the ADS1115
+// or to enable 12-bit ADC resolution on Arduino Due,
 // otherwise will default to 10 bits, as in regular Arduino-based boards.
-#if defined(__arm__)
+#if defined(ADS1115_CONVERSIONDELAY)
+#define ADC_BITS    15
+#elif defined(__arm__)
 #define ADC_BITS    12
 #else
 #define ADC_BITS    10
