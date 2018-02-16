@@ -45,6 +45,12 @@
 class EnergyMonitor
 {
   public:
+    EnergyMonitor(); 
+    
+    typedef int (*inputPinReaderMethod) (int _pin);
+    inputPinReaderMethod inputPinReader;
+    
+    static int defaultInputPinReader(int _pin);
 
     void voltage(unsigned int _inPinV, double _VCAL, double _PHASECAL);
     void current(unsigned int _inPinI, double _ICAL);
