@@ -21,7 +21,7 @@
 //--------------------------------------------------------------------------------------
 // Constructor. Set the pinReader to the default pin reader method
 //--------------------------------------------------------------------------------------
-myEnergyMonitor::myEnergyMonitor()
+EnergyMonitor::myEnergyMonitor()
 {
   this->inputPinReader = defaultInputPinReader;
 }
@@ -29,7 +29,7 @@ myEnergyMonitor::myEnergyMonitor()
 //--------------------------------------------------------------------------------------
 // By default we just call Arduino's analogRead
 //--------------------------------------------------------------------------------------
-int myEnergyMonitor::defaultInputPinReader(int _pin)
+int EnergyMonitor::defaultInputPinReader(int _pin)
 {
   return analogRead(_pin);
 }
