@@ -10,61 +10,37 @@
 #ifndef EmonLib_h
 #define EmonLib_h
 
-#if defined(ARDUINO) && ARDUINO >= 100
-
 #include "Arduino.h"
-
-#else
-
-#include "WProgram.h"
-
-#endif
-
-// define theoretical vref calibration constant for use in readvcc()
-// 1100mV*1024 ADC steps http://openenergymonitor.org/emon/node/1186
-// override in your code with value for your specific AVR chip
-// determined by procedure described under "Calibrating the internal reference voltage" at
-// http://openenergymonitor.org/emon/buildingblocks/calibration
-#ifndef READVCC_CALIBRATION_CONST
-#define READVCC_CALIBRATION_CONST 1126400L
-#endif
-
 
 // to enable 15-bit ADC resolution on the ADS1115
 // or to enable 12-bit ADC resolution on Arduino Due,
 // otherwise will default to 10 bits, as in regular Arduino-based boards.
-#if defined(ADS1115_CONVERSIONDELAY)
+// #if defined(ADS1115_CONVERSIONDELAY)
 #define ADC_BITS    15
-#elif defined(__arm__)
-#define ADC_BITS    12
-#else
-#define ADC_BITS    10
-#endif
-
 #define ADC_COUNTS  (1<<ADC_BITS)
-
 
 class EnergyMonitor
 {
   public:
     EnergyMonitor(); 
     
-    typedef int (*inputPinReaderMethod) (int _pin);
+    typedef uint16_t (*inputPinReaderMethod) (uint8_t _pin);
     inputPinReaderMethod inputPinReader;
+
+    typedef uint16_t (*readVCCMethod) ();
+    readVCCMethod readVCC;
     
-    static int defaultInputPinReader(int _pin);
+    static uint16_t defaultInputPinReader(uint8_t _pin);
+    static uint16_t defaultReadVcc();
 
-    void voltage(unsigned int _inPinV, double _VCAL, double _PHASECAL);
-    void current(unsigned int _inPinI, double _ICAL);
+    void voltage(uint8_t _inPinV, double _VCAL, double _PHASECAL);
+    void current(uint8_t _inPinI, double _ICAL);
 
-    void voltageTX(double _VCAL, double _PHASECAL);
-    void currentTX(unsigned int _channel, double _ICAL);
-
-    void calcVI(unsigned int crossings, unsigned int timeout);
-    double calcIrms(unsigned int NUMBER_OF_SAMPLES);
+    double calcVrms(uint8_t crossings, uint16_t timeout);
+    double calcIrms(uint16_t NUMBER_OF_SAMPLES);
     void serialprint();
 
-    long readVcc();
+    void calcRealPowerValues();
     //Useful value variables
     double realPower,
       apparentPower,
@@ -75,8 +51,8 @@ class EnergyMonitor
   private:
 
     //Set Voltage and current input pins
-    unsigned int inPinV;
-    unsigned int inPinI;
+    uint8_t inPinV;
+    uint8_t inPinI;
     //Calibration coefficients
     //These need to be set in order to obtain accurate results
     double VCAL;
@@ -86,22 +62,21 @@ class EnergyMonitor
     //--------------------------------------------------------------------------------------
     // Variable declaration for emon_calc procedure
     //--------------------------------------------------------------------------------------
-    int sampleV;                        //sample_ holds the raw analog read value
-    int sampleI;
+    // uint16_t sampleV;                        //sample_ holds the raw analog read value
+    uint16_t sampleI;
+    uint16_t numberOfSamples;
 
-    double lastFilteredV,filteredV;          //Filtered_ is the raw analog value minus the DC offset
+    double filteredV;          //Filtered_ is the raw analog value minus the DC offset
     double filteredI;
     double offsetV;                          //Low-pass filter output
     double offsetI;                          //Low-pass filter output
 
-    double phaseShiftedV;                             //Holds the calibrated phase shifted voltage.
+    double sumP;
 
-    double sqV,sumV,sqI,sumI,instP,sumP;              //sq = squared, sum = Sum, inst = instantaneous
+    boolean checkVCross;                  //Used to measure number of times threshold is crossed.
 
-    int startV;                                       //Instantaneous voltage at start of sample window.
-
-    boolean lastVCross, checkVCross;                  //Used to measure number of times threshold is crossed.
-
+    double I_RATIO;
+    double V_RATIO;
 
 };
 

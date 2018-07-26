@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/mathew/.arduino15/packages/esp8266/tools/**",
+                "/home/mathew/.arduino15/packages/esp8266/hardware/esp8266/2.4.1/**",
+                "${env:HOME}/Arduino/libraries/ADS1115",
+                "${env:HOME}/Arduino/libraries/I2Cdev",
+                "../../"
+           ],
+            "intelliSenseMode": "clang-x64",
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "defines": [
+                "ARDUINO=106",
+                "ESP8266"
+            ]
+        }
+    ],
+    "version": 4
+}
